@@ -29,18 +29,31 @@ const mutations = {
 
 const actions = {
   // user login
-  login({ commit }, userInfo) {
-    const { username, password } = userInfo
-    return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
-    })
+  // login({ commit }, userInfo) {
+  //   const { username, password } = userInfo
+  //   return new Promise((resolve, reject) => {
+  //     login({ username: username.trim(), password: password }).then(response => {
+  //       const { data } = response
+  //       commit('SET_TOKEN', data.token)
+  //       setToken(data.token)
+  //       resolve()
+  //     }).catch(error => {
+  //       reject(error)
+  //     })
+  //   })
+  // },
+
+
+
+  async login(context, userInfo){
+    let res = await login(userInfo)
+    if(res.code == 20000){
+      context.commit('SET_TOKEN', res.data.token)
+      setToken(res.data.token)
+      return "OK"
+    }else{
+      return Promise.reject(new Error('失败'))
+    }
   },
 
   // get user info
@@ -50,7 +63,7 @@ const actions = {
         const { data } = response
 
         if (!data) {
-          return reject('Verification failed, please Login again.')
+          return reject('验证失败，请重新登录')
         }
 
         const { name, avatar } = data
