@@ -51,15 +51,71 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      meta: { title: '首页', icon: 'dashboard' }
     }]
+  },
+
+  {
+    path:'/product',
+    component:Layout,
+    name:'Product',
+    redirect:'/product/trademark/list',
+    meta:{title:'商品管理',icon:'el-icon-s-shop'},
+    children:[
+      {
+        path:'trademark/list',
+        name:'Trademark',
+        component:()=>import('@/views/product/trademark/List'),
+        meta:{title:'品牌管理'}
+      },
+      {
+        path:'attr/list',
+        name:'Attr',
+        component:()=>import('@/views/product/attr/List'),
+        meta:{title:'属性管理'}
+      },
+      {
+        path:'sku/list',
+        name:'Sku',
+        component:()=>import('@/views/product/sku/List'),
+        meta:{title:'Sku管理'}
+      },
+      {
+        path:'spu/list',
+        name:'Spu',
+        component:()=>import('@/views/product/spu/List'),
+        meta:{title:'Spu管理'}
+      },
+    ]
+  },
+
+  {
+    path:'/directory',
+    name:'Directory',
+    component:Layout,
+    redirect:'/directory/wmzwzm',
+    meta:{title:'目录',icon:'link'},
+    children:[
+      {
+        path:'wmzwzm',
+        name:'Wmzwzm',
+        component:()=>import('@/views/directory/wmzwzm/index'),
+        meta:{title:'无码中文字幕'}
+      },
+      {
+        path:'ymzwzm',
+        name:'Ymzwzm',
+        component:()=>import('@/views/directory/ymzwzm/index'),
+        meta:{title:'有码中文字幕'}
+      },
+    ]
   },
 
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
 
-const createRouter = () => new Route({
+const createRouter = () => new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
