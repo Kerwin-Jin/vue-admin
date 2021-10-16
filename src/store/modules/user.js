@@ -14,6 +14,8 @@ const state = getDefaultState()
 
 const mutations = {
   RESET_STATE: (state) => {
+
+    // Object.assign函数的作用是合并后面对象的属性到前面的对象中
     Object.assign(state, getDefaultState())
   },
   SET_TOKEN: (state, token) => {
@@ -42,8 +44,6 @@ const actions = {
   //     })
   //   })
   // },
-
-
 
   async login(context, userInfo){
     let res = await login(userInfo)
@@ -78,17 +78,27 @@ const actions = {
   },
 
   // user logout
-  logout({ commit, state }) {
-    return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
-        removeToken() // must remove  token  first
-        resetRouter()
-        commit('RESET_STATE')
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
-    })
+  async logout({ commit, state }) {
+    // return new Promise((resolve, reject) => {
+    //   logout(state.token).then(() => {
+    //     removeToken() // must remove  token  first
+    //     resetRouter()
+    //     commit('RESET_STATE')
+    //     resolve()
+    //   }).catch(error => {
+    //     reject(error)
+    //   })
+    // })
+
+    let res = await logout(state.token);
+    if(res.code == 20000){
+      removeToken() // must remove  token  first
+      resetRouter()
+      commit('RESET_STATE')
+      return "OK"
+    }else{
+      return Promise.reject(new Error('退出失败'));
+    }
   },
 
   // remove token
