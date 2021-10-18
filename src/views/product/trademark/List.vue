@@ -64,20 +64,20 @@
 
     <!-- 点击添加或者编辑需要展示的对话框 -->
     <el-dialog title="添加品牌" :visible.sync="dialogFormVisible">
-      <el-form :model="form" style="width:80%">
+      <el-form :model="tmForm" style="width:80%">
         <el-form-item label="品牌名称" label-width="100px">
-          <el-input v-model="form.name" autocomplete="off"></el-input>
+          <el-input v-model="tmForm.tmName" autocomplete="off"></el-input>
         </el-form-item>
 
         <el-form-item label="品牌LOGO" label-width="100px">
           <!-- 在拷贝upload组件的时候，需要把html，css，js代码都拷贝过来 -->
           <el-upload
             class="avatar-uploader"
-            action="https://jsonplaceholder.typicode.com/posts/"
+            action="https://www.hualigs.cn/api/upload"
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload">
-            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+            <img v-if="tmForm.logoUrl" :src="tmForm.logoUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
           </el-upload>
@@ -101,11 +101,10 @@ export default {
           page:1,
           limit:3,
           dialogFormVisible:false,
-          form:{
-            name:'kersin',
-            region:'shagnhai'
+          tmForm:{
+            tmName:'',
+            tmLogoUrl:''
           },
-          imageUrl: ''
       }
     },
     mounted(){
@@ -139,10 +138,18 @@ export default {
         this.dialogFormVisible = true;
       },
 
-
+      // 图片上传成功之后的回调函数
       handleAvatarSuccess(res, file) {
-        this.imageUrl = URL.createObjectURL(file.raw);
+        // console.log(res,file);
+        // 在这个回调函数中，res代表的是上传成功之后的响应数据，file代表的是上传成功之后的图片文件本身
+
+        // 本身写的这个东西是错的，它也是在手机上传成功之后的图片路径，但是这样的写法只是模拟
+        // 它最终收集的是本地的路径，是错的，我们要的是上传成功之后服务器返回来的线上路径
+
+        this.tmForm.tmLogoUrl = res.data
       },
+
+      // 图片上传前的回调，可以用来做图片大小和格式校验
       beforeAvatarUpload(file) {
         const isJPG = file.type === 'image/jpeg';
         const isLt2M = file.size / 1024 / 1024 < 2;
