@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-button type="primary" icon="el-icon-plus" @click="openDialog">添加</el-button>
+    <el-button type="primary" icon="el-icon-plus" @click="openAddDialog">添加</el-button>
 
     <!-- 
       table当中，:data="tableData"，代表的是表格要展示的数组
@@ -32,7 +32,7 @@
         align="center">
         <template slot-scope="{row,$index}">
           <!-- row就代表当前遍历的对象，$index代表当前遍历的下标 -->
-          <img :src="row.logoUrl" alt="" width="80px">
+          <img :src="row.logoUrl" alt="" width="80px" :data-index="$index">
         </template>
       </el-table-column>
 
@@ -41,9 +41,9 @@
         align="center"
         label="操作"
         width="500">
-        <template>
-          <el-button type="primary" icon="el-icon-edit" size="small">修改</el-button>
-          <el-button type="danger" icon="el-icon-delete" size="small">删除</el-button>
+        <template slot-scope="{row,$index}">
+          <el-button type="primary" icon="el-icon-edit" size="small" @click="openUpdateDialog(row,$index)">修改</el-button>
+          <el-button type="danger" icon="el-icon-delete" size="small" @click="deleteTrademark(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -63,17 +63,17 @@
     </el-pagination>
 
     <!-- 点击添加或者编辑需要展示的对话框 -->
-    <el-dialog title="添加品牌" :visible.sync="dialogFormVisible">
-      <el-form :model="tmForm" style="width:80%">
+    <el-dialog :title="tmForm.id?'修改品牌':'添加品牌'" :visible.sync="dialogFormVisible">
+      <el-form :model="tmForm" style="width:80%" :rules="tmFormRules">
         <el-form-item label="品牌名称" label-width="100px">
           <el-input v-model="tmForm.tmName" autocomplete="off"></el-input>
         </el-form-item>
 
-        <el-form-item label="品牌LOGO" label-width="100px">
+        <el-form-item label="品牌LOGO" label-width="100px" prop="tmName">
           <!-- 在拷贝upload组件的时候，需要把html，css，js代码都拷贝过来 -->
           <el-upload
             class="avatar-uploader"
-            action="https://www.hualigs.cn/api/upload"
+            action=""
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload">
@@ -85,7 +85,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click="submitAddOrUpdate()">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -95,16 +95,30 @@
 export default {
     name:'Trademark',
     data(){
+
+      const validatetmName = (rule, value, callback) => {
+        if (value.length < 2 || value.length > 20) {
+          callback(new Error('tmName不能小于2位或者大于20位'));
+        } else {
+          callback();
+        }
+      }
       return {
           tableData: [],
           total:0,
           page:1,
           limit:3,
           dialogFormVisible:false,
+
+          // tmForm就是我们收集成功的那个品牌对象
           tmForm:{
             tmName:'',
             tmLogoUrl:''
           },
+          tmFormRules:{
+            tmName:[{ validator: validatetmName, trigger: 'blur' }],
+            tmLogoUrl:[{required:true,message:"请上传图片",trigger:"blur"}]
+          }
       }
     },
     mounted(){
@@ -134,10 +148,56 @@ export default {
       },
 
       // 点击添加按钮打开添加品牌对话框
-      openDialog(){
+      openAddDialog(){
+        this.tmForm = {
+          tmName:'',
+          tmLogoUrl:''
+        }
+        this.dialogFormVisible = true;
+      },
+      //展示修改对话框
+      openUpdateDialog(row,index){
+        this.tmForm = {...row, index};
+        console.log(this.tmForm);
         this.dialogFormVisible = true;
       },
 
+      // 添加或者修改通过一个函数实现，区别是添加或者修改的标志就是看是否tmForm中有id这个属性，有说明是修改，没有说明是添加
+      submitAddOrUpdate(){
+        if(this.tmForm.id){
+          this.tableData[this.tmForm.index] = this.tmForm;
+          // this.tableData.push 是为了能让页面进行更新；这里只是模拟，把data中的数组修改了，真实项目中应该是向后端发请求
+          this.tableData.push();
+          this.$message.success('修改成功');
+        }else{
+          this.$message.success('添加成功');
+        }
+        this.dialogFormVisible = false
+      },
+
+      // 删除
+      deleteTrademark(row){
+        this.$confirm(`是否删除${row.tmName}?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+
+          this.tableData = this.tableData.filter((item)=>{
+            return item.id != row.id;
+          });
+
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+      },
       // 图片上传成功之后的回调函数
       handleAvatarSuccess(res, file) {
         // console.log(res,file);
@@ -145,8 +205,6 @@ export default {
 
         // 本身写的这个东西是错的，它也是在手机上传成功之后的图片路径，但是这样的写法只是模拟
         // 它最终收集的是本地的路径，是错的，我们要的是上传成功之后服务器返回来的线上路径
-
-        this.tmForm.tmLogoUrl = res.data
       },
 
       // 图片上传前的回调，可以用来做图片大小和格式校验
