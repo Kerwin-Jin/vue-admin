@@ -65,11 +65,11 @@
     <!-- 点击添加或者编辑需要展示的对话框 -->
     <el-dialog :title="tmForm.id?'修改品牌':'添加品牌'" :visible.sync="dialogFormVisible">
       <el-form :model="tmForm" style="width:80%" :rules="tmFormRules">
-        <el-form-item label="品牌名称" label-width="100px">
+        <el-form-item label="品牌名称" label-width="100px" prop="tmName">
           <el-input v-model="tmForm.tmName" autocomplete="off"></el-input>
         </el-form-item>
 
-        <el-form-item label="品牌LOGO" label-width="100px" prop="tmName">
+        <el-form-item label="品牌LOGO" label-width="100px" prop="tmLogoUrl">
           <!-- 在拷贝upload组件的时候，需要把html，css，js代码都拷贝过来 -->
           <el-upload
             class="avatar-uploader"
@@ -116,7 +116,7 @@ export default {
             tmLogoUrl:''
           },
           tmFormRules:{
-            tmName:[{ validator: validatetmName, trigger: 'blur' }],
+            tmName:[{ validator:validatetmName, trigger: 'blur' }],
             tmLogoUrl:[{required:true,message:"请上传图片",trigger:"blur"}]
           }
       }

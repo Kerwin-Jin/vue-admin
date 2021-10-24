@@ -5,6 +5,8 @@ import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import locale from 'element-ui/lib/locale/lang/en' // lang i18n
+import CategorySelector from "@/components/CategorySelector"
+import HintButton from "@/components/HintButton"
 
 import '@/styles/index.scss' // global css
 
@@ -15,6 +17,9 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 
+// 全局注册组件
+Vue.component('CategorySelector', CategorySelector)
+Vue.component('HintButton', HintButton)
 
 // 引入接口
 import * as API from "@/api/product/index"
