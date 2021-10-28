@@ -1,22 +1,12 @@
 <template>
-  <span :title="title" style="margin:5px">
-    <el-button v-bind="$attrs" @click="handleClick()">{{title}}</el-button>
-  </span>
+  <a :title="title" style="margin:5px" href="javascript:;">
+    <el-button v-bind="$attrs" v-on="$listeners"></el-button>
+  </a>
 </template>
 
 <script>
 export default {
     name:"HintButton",
-    props:{
-        title:{
-            require:true,
-            default:'按钮1'
-        }
-    },
-    methods:{
-        handleClick(){
-            this.$emit('superlistener', 'fjsdkf');
-        }
-    }
+    props:['title']
 }
 </script>

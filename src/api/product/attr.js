@@ -83,5 +83,30 @@ export default{
                 console.log('未传入参数！');
                 break;
        }
+   },
+
+   getAttrList(id1,id2,id3){
+        if(id1&&id2&&id3){
+            return [
+                {   
+                    attrId:101,
+                    attrName:'宝莲灯',
+                    attrList:['城乡','三圣母','哮天犬','丁香']
+                },
+                {   
+                    attrId:102,
+                    attrName:'宝莲灯2',
+                    attrList:['城乡2','三圣母2','哮天犬2','丁香2']
+                },
+                {   
+                    attrId:103,
+                    attrName:'宝莲灯3',
+                    attrList:['城乡3','三圣母3','哮天犬3','丁香3']
+                }
+            ]
+        }else{
+            return [];
+        }
+        
    }
 }
