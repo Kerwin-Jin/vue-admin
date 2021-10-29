@@ -91,17 +91,31 @@ export default{
                 {   
                     attrId:101,
                     attrName:'宝莲灯',
-                    attrList:['城乡','三圣母','哮天犬','丁香']
+                    attrList:[
+                        {id:'10101',name:'沉香'},
+                        {id:'10102',name:'三圣母'},
+                        {id:'10103',name:'哮天犬'},
+                        {id:'10104',name:'丁香'}
+                    ]
                 },
                 {   
                     attrId:102,
-                    attrName:'宝莲灯2',
-                    attrList:['城乡2','三圣母2','哮天犬2','丁香2']
+                    attrName:'三国演义',
+                    attrList:[
+                        {id:'10201',name:'刘备打野被抓'},
+                        {id:'10202',name:'张飞怒送人头'},
+                        {id:'10203',name:'诸葛亮中路超神'},
+                        {id:'10204',name:'关羽上路浪死'}
+                    ]
                 },
                 {   
                     attrId:103,
-                    attrName:'宝莲灯3',
-                    attrList:['城乡3','三圣母3','哮天犬3','丁香3']
+                    attrName:'单独',
+                    attrList:[
+                        {id:'10301',name:'傻子'},
+                        {id:'10302',name:'二傻子'},
+                        {id:'10303',name:'小傻子222'}
+                    ]
                 }
             ]
         }else{
