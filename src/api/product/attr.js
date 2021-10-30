@@ -91,7 +91,7 @@ export default{
                 {   
                     attrId:101,
                     attrName:'宝莲灯',
-                    attrList:[
+                    attrValueList:[
                         {id:'10101',name:'沉香'},
                         {id:'10102',name:'三圣母'},
                         {id:'10103',name:'哮天犬'},
@@ -101,7 +101,7 @@ export default{
                 {   
                     attrId:102,
                     attrName:'三国演义',
-                    attrList:[
+                    attrValueList:[
                         {id:'10201',name:'刘备打野被抓'},
                         {id:'10202',name:'张飞怒送人头'},
                         {id:'10203',name:'诸葛亮中路超神'},
@@ -111,7 +111,7 @@ export default{
                 {   
                     attrId:103,
                     attrName:'单独',
-                    attrList:[
+                    attrValueList:[
                         {id:'10301',name:'傻子'},
                         {id:'10302',name:'二傻子'},
                         {id:'10303',name:'小傻子222'}

@@ -96,6 +96,9 @@ export default {
     name:'Trademark',
     data(){
 
+      // 自定义的验证规则
+      // value代表后期要验证的用户输入的数据
+      // callback是一个回调函数，如果callback调用的时候传递了参数，代表的是验证失败，如果没有传递参数，代表验证成功
       const validatetmName = (rule, value, callback) => {
         if (value.length < 2 || value.length > 20) {
           callback(new Error('tmName不能小于2位或者大于20位'));
@@ -116,7 +119,7 @@ export default {
             tmLogoUrl:''
           },
           tmFormRules:{
-            tmName:[{ validator:validatetmName, trigger: 'blur' }],
+            tmName:[{ validator:validatetmName, trigger: 'blur' }],   //这里使用自定义校验规则
             tmLogoUrl:[{required:true,message:"请上传图片",trigger:"blur"}]
           }
       }
