@@ -117,7 +117,7 @@ export default{
        }
    },
 
-   getAttrList(id1,id2,id3){
+   getSpuList(id1,id2,id3){
         if(id1&&id2&&id3){
             return attrListData;
         }else{

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-form :inline="true" :model="attrForm" class="demo-form-inline">
+    <el-form :inline="true" :model="attrForm" class="demo-form-inline" :disabled="!disabled">
         <el-form-item label="一级分类">
             <el-select v-model="attrForm.category1" placeholder="请选择" @change="getCategoryList2">
                 <el-option :label="a1.name" :value="a1.id" v-for="a1 in categoryList1" :key="a1.id"></el-option>
@@ -34,6 +34,9 @@ export default {
             categoryList2:[],
             categoryList3:[]
         }
+    },
+    props:{
+      disabled:{type:Boolean,default:true}  
     },
     mounted(){
         this.getCategoryList1();

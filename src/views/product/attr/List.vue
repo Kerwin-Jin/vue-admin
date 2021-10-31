@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card>
-      <CategorySelector @handlerCategory="handlerCategory"></CategorySelector>
+      <CategorySelector @handlerCategory="handlerCategory" :disabled="isShowList"></CategorySelector>
     </el-card>
     <el-card style="margin-top:20px;">
 
@@ -41,7 +41,7 @@
           >
           <template slot-scope="{row}">
               <HintButton size="mini" type="warning" icon="el-icon-edit" title="修改" @click="showUpdateDiv(row)"></HintButton>
-              <HintButton size="mini" type="danger" icon="el-icon-delete" title="删除"></HintButton>
+              <HintButton size="mini" type="danger" icon="el-icon-delete" title="删除" @click="deleteAttr(row.attrId)"></HintButton>
           </template>
           </el-table-column>
         </el-table>
@@ -51,11 +51,11 @@
       <div v-show="!isShowList">
         <el-form :inline="true" :model="attrForm">
           <el-form-item label="属性名">
-            <el-input  placeholder="请输入属性名" v-model="attrForm.attrName"></el-input>
+            <el-input  placeholder="请输入属性名" v-model="attrForm.attrName" ref="attrInput"></el-input>
           </el-form-item>
         </el-form>
 
-        <el-button type="primary" @click="addAttrValue">添加属性值</el-button>
+        <el-button type="primary" @click="addAttrValue" :disabled="!attrForm.attrName">添加属性值</el-button>
         <el-button @click="backToShowAttrList">取消</el-button>
 
         <el-table
@@ -78,13 +78,16 @@
             </template>
           </el-table-column>
           <el-table-column width="200" label="操作" align="center">
-            <template>
-              <HintButton type="danger" size="mini" icon="el-icon-delete" title="删除属性"></HintButton>
+            <template slot-scope="{row,$index}">
+              <!-- onConfirm点击气泡确认框的确定按钮，会触发一个事件，事件名称是onConfirm，官网写错了 -->
+              <el-popconfirm :title="`确定要删除${row.name}属性值吗？`" @onConfirm="attrForm.attrValueList.splice($index,1)">
+                <HintButton slot="reference" type="danger" size="mini" icon="el-icon-delete" title="删除属性"></HintButton>
+              </el-popconfirm>
             </template>
           </el-table-column>
         </el-table>
 
-        <el-button type="primary" disabled>保存</el-button>
+        <el-button type="primary" @click="save" :disabled="attrForm.attrValueList.length==0">保存</el-button>
         <el-button @click="backToShowAttrList">取消</el-button>
       </div>
 
@@ -205,6 +208,49 @@ export default {
         this.$nextTick(()=>{
           this.$refs[index].focus();
         })
+      },
+
+
+      // 点击保存按钮
+      save(){
+        // 获取参数
+        let attr = this.attrForm;
+
+        if(!attr.attrName){
+          this.$message.warning("请输入属性名！");
+          this.$refs['attrInput'].focus();
+          return;
+        };
+
+        // 处理参数
+        attr.attrValueList = attr.attrValueList.filter(item=>{
+          if(item.name.trim() != ''){
+            delete item.isEdit;
+            this.attrForm={
+              attrName:'',
+              attrValueList:[],
+              // 在这里可以收集category3Id，因为此时data中的数据都准备好了
+              categoryId:this.category3Id,
+              categoryLevel:3
+            };
+            return true;
+          }
+        });
+
+        // 发送请求
+        this.$API.attr.addOrUpdateAttr(attr);
+        this.$message.success("添加属性成功");
+        this.isShowList = true;
+
+        // 重新获取attr列表
+        this.attrList = this.$API.attr.getAttrList(this.category1Id,this.category2Id,this.category3Id);
+      },
+
+      // 点击删除按钮调用接口进行删除操作
+      deleteAttr(attrId){
+        this.$API.attr.deleteAttr(attrId);
+        // 重新获取attr列表
+        this.attrList = this.$API.attr.getAttrList(this.category1Id,this.category2Id,this.category3Id);
       }
     }
 }
