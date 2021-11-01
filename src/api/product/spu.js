@@ -2,35 +2,21 @@ import service from "@/utils/request"
 
 // attr模块相关的接口
 
-let attrListData = [
+let spuListData = [
     {   
-        attrId:101,
-        attrName:'宝莲灯',
-        attrValueList:[
-            {id:'10101',name:'沉香'},
-            {id:'10102',name:'三圣母'},
-            {id:'10103',name:'哮天犬'},
-            {id:'10104',name:'丁香'}
-        ]
+        spuId:101,
+        spuName:'HUAWEI P40',
+        spuDescription:"HUAWEI P40"
     },
     {   
-        attrId:102,
-        attrName:'三国演义',
-        attrValueList:[
-            {id:'10201',name:'刘备打野被抓'},
-            {id:'10202',name:'张飞怒送人头'},
-            {id:'10203',name:'诸葛亮中路超神'},
-            {id:'10204',name:'关羽上路浪死'}
-        ]
+        spuId:102,
+        spuName:'iPhone 13',
+        spuDescription:"iPhone 13"
     },
     {   
-        attrId:103,
-        attrName:'单独',
-        attrValueList:[
-            {id:'10301',name:'傻子'},
-            {id:'10302',name:'二傻子'},
-            {id:'10303',name:'小傻子222'}
-        ]
+        spuId:103,
+        spuName:'Xiaomi 10',
+        spuDescription:"Xiaomi 10"
     }
 ]
 export default{
@@ -119,29 +105,10 @@ export default{
 
    getSpuList(id1,id2,id3){
         if(id1&&id2&&id3){
-            return attrListData;
+            return spuListData;
         }else{
             return [];
         }
         
-   },
-
-   addOrUpdateAttr(attr){
-        // 传过来参数中如果有attrId说明是在进行修改，
-       if(attr.attrId){
-            attrListData.forEach(item=>{
-                if(item.attrId == attr.attrId){
-                    item.attrValueList = attr.attrValueList;
-                }
-            })
-       }else{
-            // 如果没有attrId说明是在进行添加，这里需要对参数做一下处理（新增加一个属性）
-            attr.attrId = 109;
-            attrListData.push(attr);
-       }
-   },
-
-   deleteAttr(attrId){
-    attrListData = attrListData.filter(item=>item.attrId!=attrId);
    }
 }
