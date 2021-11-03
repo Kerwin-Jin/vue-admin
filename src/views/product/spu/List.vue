@@ -5,61 +5,79 @@
       <CategorySelector @handlerCategory="handlerCategory" :disabled="isShowList"></CategorySelector>
     </el-card>
     <el-card style="margin:20px 0">
-      <el-button type="primary" size="mini" icon="el-icon-plus">添加SPU</el-button>
-      <el-table
-        style="margin:20px 0"
-        :data=spuList
-        border>
-        <el-table-column
-        type="index" 
-        label="序号"
-        width="80"
-        align="center">
-        </el-table-column>
-        <el-table-column
-        prop="spuName"
-        label="SPU名称"
-        width="180"
-        align="center">
-        </el-table-column>
-        <el-table-column
-        prop="spuDescription"
-        label="SPU描述"
-        align="center">
-        </el-table-column>
-        <el-table-column
-        label="操作"
-        align="center">
-          <template>
-            <HintButton type="success" size="mini" title="添加SPU" icon="el-icon-plus"></HintButton>
-            <HintButton type="primary" size="mini" title="修改SPU" icon="el-icon-edit"></HintButton>
-            <HintButton type="info" size="mini" title="查看SPU" icon="el-icon-info"></HintButton>
-            <HintButton type="danger" size="mini" title="删除SPU" icon="el-icon-delete"></HintButton>
-          </template>
-        </el-table-column>
-      </el-table>
 
-      <!-- 分页 -->
-      <el-pagination
-        small
-        layout="prev, pager, next"
-        :total="50"
-        style="text-align:center;">
-      </el-pagination>
+      <!-- spu的列表页面 -->
+      <div v-show="activeDiv==1">
+        <el-button type="primary" size="mini" icon="el-icon-plus" @click="activeDiv=2" :disabled="!category3Id">添加SPU</el-button>
+        <el-table
+          style="margin:20px 0"
+          :data=spuList
+          border>
+          <el-table-column
+          type="index" 
+          label="序号"
+          width="80"
+          align="center">
+          </el-table-column>
+          <el-table-column
+          prop="spuName"
+          label="SPU名称"
+          width="180"
+          align="center">
+          </el-table-column>
+          <el-table-column
+          prop="spuDescription"
+          label="SPU描述"
+          align="center">
+          </el-table-column>
+          <el-table-column
+          label="操作"
+          align="center">
+            <template slot-scope="{row}">
+              <HintButton type="success" size="mini" title="添加SKU" icon="el-icon-plus" @click="activeDiv=3"></HintButton>
+              <HintButton type="primary" size="mini" title="修改SPU" icon="el-icon-edit" @click="showUpdateDiv(row)"></HintButton>
+              <HintButton type="info" size="mini" title="查看SPU" icon="el-icon-info"></HintButton>
+              <HintButton type="danger" size="mini" title="删除SPU" icon="el-icon-delete"></HintButton>
+            </template>
+          </el-table-column>
+        </el-table>
+
+        <!-- 分页 -->
+        <el-pagination
+          v-if="spuList.length"
+          small
+          layout="prev, pager, next"
+          :total="50"
+          style="text-align:center;">
+        </el-pagination>
+      </div>
+
+
+
+      <!-- spu的添加和修改页面 -->
+      <!-- <SpuForm v-show="activeDiv==2" :visible="activeDiv" @update:visible="activeDiv = $event"></SpuForm> -->
+      <SpuForm v-show="activeDiv==2" :visible.sync="activeDiv"></SpuForm>
+
+      <!-- sku的添加页面 -->
+      <SkuForm v-show="activeDiv==3" :visible.sync="activeDiv"></SkuForm>
     </el-card>
   </div>
 </template>
 
 <script>
+import SpuForm from "./SpuForm"
+import SkuForm from "./SkuForm"
 export default {
     name:'Spu',
+    components:{SpuForm,SkuForm},
     data(){
       return{
         category1Id:'',
         category2Id:'',
         category3Id:'',
         spuList:[],
-        isShowList:true
+        isShowList:true,
+        activeDiv:1
       }
     },
     methods:{
@@ -77,7 +95,14 @@ export default {
           this.category3Id = categoryId;
           this.spuList = this.$API.spu.getSpuList(this.category1Id,this.category2Id,this.category3Id);
         }
+      },
+
+
+      showUpdateDiv(row){
+        this.activeDiv = 2;
+        console.log(row);
       }
+
     }
     
 }
