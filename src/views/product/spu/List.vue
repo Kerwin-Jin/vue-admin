@@ -8,7 +8,7 @@
 
       <!-- spu的列表页面 -->
       <div v-show="activeDiv==1">
-        <el-button type="primary" size="mini" icon="el-icon-plus" @click="activeDiv=2" :disabled="!category3Id">添加SPU</el-button>
+        <el-button type="primary" size="mini" icon="el-icon-plus" @click="showAddSpuDiv" :disabled="!category3Id">添加SPU</el-button>
         <el-table
           style="margin:20px 0"
           :data=spuList
@@ -34,7 +34,7 @@
           label="操作"
           align="center">
             <template slot-scope="{row}">
-              <HintButton type="success" size="mini" title="添加SKU" icon="el-icon-plus" @click="activeDiv=3"></HintButton>
+              <HintButton type="success" size="mini" title="添加SKU" icon="el-icon-plus" @click="showAddSpuDiv"></HintButton>
               <HintButton type="primary" size="mini" title="修改SPU" icon="el-icon-edit" @click="showUpdateDiv(row)"></HintButton>
               <HintButton type="info" size="mini" title="查看SPU" icon="el-icon-info"></HintButton>
               <HintButton type="danger" size="mini" title="删除SPU" icon="el-icon-delete"></HintButton>
@@ -56,10 +56,10 @@
 
       <!-- spu的添加和修改页面 -->
       <!-- <SpuForm v-show="activeDiv==2" :visible="activeDiv" @update:visible="activeDiv = $event"></SpuForm> -->
-      <SpuForm v-show="activeDiv==2" :visible.sync="activeDiv"></SpuForm>
+      <SpuForm v-show="activeDiv==2" :visible.sync="activeDiv" ref="spu"></SpuForm>
 
       <!-- sku的添加页面 -->
-      <SkuForm v-show="activeDiv==3" :visible.sync="activeDiv"></SkuForm>
+      <SkuForm v-show="activeDiv==3" :visible.sync="activeDiv" ref="sku"></SkuForm>
     </el-card>
   </div>
 </template>
@@ -97,10 +97,17 @@ export default {
         }
       },
 
-
+      // 展示更新Spu的DIV
       showUpdateDiv(row){
+        // 显示更新Spu的DIV
         this.activeDiv = 2;
-        console.log(row);
+        this.$refs.spu.getUpdateSpuFormInitData(row);
+      },
+
+      // 展示添加Spu的DIV
+      showAddSpuDiv(){
+        this.activeDiv = 3;
+        this.$refs.spu.getAddSpuFormInitData();
       }
 
     }

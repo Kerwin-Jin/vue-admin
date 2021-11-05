@@ -72,7 +72,8 @@ export default {
     props:['visible'],
     data() {
       return {
-        imageUrl: ''
+        imageUrl: '',
+        spuInfo:{}
       };
     },
     methods: {
@@ -90,6 +91,20 @@ export default {
           this.$message.error('上传头像图片大小不能超过 2MB!');
         }
         return isJPG && isLt2M;
+      },
+
+
+      getAddSpuFormInitData(){
+        console.log('getAddSpuFormInitData');
+      },
+
+      async getUpdateSpuFormInitData(spu){
+        let res = await this.$API.spu.getSpuInfoById(spu.spuId);
+
+        if(res.code==200){
+          this.spuInfo = res.data;
+          console.log(this.spuInfo);
+        }
       }
     }
 }

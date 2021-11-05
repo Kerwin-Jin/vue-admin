@@ -110,5 +110,8 @@ export default{
             return [];
         }
         
+   },
+   getSpuInfoById(spuId){
+        return service.get(`/admin/product/getSpuById/${spuId}`);
    }
 }
