@@ -113,5 +113,17 @@ export default{
    },
    getSpuInfoById(spuId){
         return service.get(`/admin/product/getSpuById/${spuId}`);
-   }
+   },
+
+   getImageBySpuId(spuId){
+        return service.get(`/admin/product/getImageBySpuId/${spuId}`);
+   },
+
+    getTrademark(){
+        return service.get(`/admin/product/getTrademark`);
+    },
+
+    getSaleAttr(){
+        return service.get('/admin/product/getSaleAttr');
+    }
 }

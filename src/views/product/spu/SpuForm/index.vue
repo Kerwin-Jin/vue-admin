@@ -1,57 +1,66 @@
 <template>
   <div>
-    <el-form ref="form" label-width="80px">
+    <el-form ref="form" label-width="80px" :model="spuInfo">
         <el-form-item label="SPU名称">
-            <el-input placeholder="请输入SPU名称"></el-input>
+            <el-input placeholder="请输入SPU名称" v-model="spuInfo.spuName"></el-input>
         </el-form-item>
 
         <el-form-item label="品牌">
-            <el-select  placeholder="请选择品牌">
-                <el-option label="品牌1" value="shanghai"></el-option>
-                <el-option label="品牌2" value="beijing"></el-option>
+            <el-select  placeholder="请选择品牌" v-model="spuInfo.tmId">
+                <el-option :label="item.tmName" :value="item.id" v-for="item in trademarkList" :key="item.id"></el-option>
             </el-select>
         </el-form-item>
 
+        <!-- element-ui里面没有textarea，也是使用input去做 -->
         <el-form-item label="SPU描述">
-            <el-input type="textarea" rows="4" placeholder="请输入SPU描述"></el-input>
+            <el-input type="textarea" rows="4" placeholder="请输入SPU描述" v-model="spuInfo.description"></el-input>
         </el-form-item>
 
+        <!-- :on-preview="handlePictureCardPreview"
+            :on-remove="handleRemove" -->
         <el-form-item label="SPU图片">
-           <el-upload
-                class="avatar-uploader"
-                action="https://jsonplaceholder.typicode.com/posts/"
-                :show-file-list="false"
-                :on-success="handleAvatarSuccess"
-                :before-upload="beforeAvatarUpload">
-                <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-            </el-upload>
+          <el-upload
+            action="https://jsonplaceholder.typicode.com/posts/"
+            list-type="picture-card"
+            :on-preview="handlePictureCardPreview"
+            :on-remove="handleRemove"
+            :on-success="handlePictureSuccess"
+            :file-list="imageList">
+            <i class="el-icon-plus"></i>
+          </el-upload>
+          <el-dialog :visible.sync="dialogVisible">
+            <img width="100%" :src="dialogImageUrl" alt="">
+          </el-dialog>
         </el-form-item>
 
         <el-form-item label="销售属性">
-          <el-select  placeholder="还有1未选择">
-              <el-option label="品牌1" value="shanghai"></el-option>
-              <el-option label="品牌2" value="beijing"></el-option>
+          <el-select  :placeholder="`还有${unUseSaleAttrList.length}未选择`" v-model="unUseSaleAttr">
+              <el-option :label="item.name" :value="`${item.id}:${item.name}`" v-for="item in unUseSaleAttrList" :key="item.id"></el-option>
           </el-select>
-          <el-button type="primary" icon="el-icon-plus" style="margin-left:10px">添加销售属性</el-button>
+          <el-button type="primary" icon="el-icon-plus" style="margin-left:10px" @click="addSaleAttr" :disabled="!unUseSaleAttr">添加销售属性</el-button>
           <el-table 
             align="center"
-            style="margin-top:20px" 
+            style="margin-top:20px"
+            :data="spuInfo.spuSaleAttrList"
             border>
             <el-table-column
               type="index"
               label="序号"
+              align="center"
               width="100">
             </el-table-column>
             <el-table-column
+              prop="name"
               label="属性名"
+              align="center"
               width="180">
             </el-table-column>
             <el-table-column
               label="属性值名称列表">
             </el-table-column>
             <el-table-column
-              label="操作">
+              label="操作"
+              align="center">
               <template>
                 <el-button type="primary" size="mini">编辑</el-button>
                 <el-button type="danger" size="mini">删除</el-button>
@@ -72,66 +81,103 @@ export default {
     props:['visible'],
     data() {
       return {
-        imageUrl: '',
-        spuInfo:{}
+        dialogImageUrl: '',
+        dialogVisible: false,
+        // 这个spuInfo我们内部初始化属性都是空的，是为了添加spu的时候收集数据用的
+        // 修改spu的时候，这个spuInfo就会被赋值为请求回来的有数据的对象
+        spuInfo:{
+          category3Id:"",
+          description:"",
+          spuImageList:[],
+          spuName:"",
+          spuSaleAttrList:[],
+          tmId:""
+        },
+        imageList:[],
+        trademarkList:[],
+        saleAttrList:[],
+        unUseSaleAttr:''
       };
     },
     methods: {
-      handleAvatarSuccess(res, file) {
-        this.imageUrl = URL.createObjectURL(file.raw);
-      },
-      beforeAvatarUpload(file) {
-        const isJPG = file.type === 'image/jpeg';
-        const isLt2M = file.size / 1024 / 1024 < 2;
 
-        if (!isJPG) {
-          this.$message.error('上传头像图片只能是 JPG 格式!');
-        }
-        if (!isLt2M) {
-          this.$message.error('上传头像图片大小不能超过 2MB!');
-        }
-        return isJPG && isLt2M;
+      // 移除图片的回调
+      handleRemove(file, fileList) {
+
+        // 这里传回了两个参数，file是被删除的图片，fileList是还剩下的图片，这里直接将剩下图片的列表赋值给imageList就行
+        console.log(file, fileList);
+        this.imageList = fileList;
+      },
+      // 图片预览的回调
+      handlePictureCardPreview(file) {
+        this.dialogImageUrl = file.url;
+        this.dialogVisible = true;
       },
 
+      // 图片上传成功之后的回调
+      handlePictureSuccess(res,file,fileList){
+        console.log(res,file,fileList);
+        this.imageList = this.fileList;
+      },
 
       getAddSpuFormInitData(){
         console.log('getAddSpuFormInitData');
       },
 
       async getUpdateSpuFormInitData(spu){
-        let res = await this.$API.spu.getSpuInfoById(spu.spuId);
-
-        if(res.code==200){
-          this.spuInfo = res.data;
-          console.log(this.spuInfo);
+        
+        // 根据spuid获取spuinfo
+        let spuInfoResult = await this.$API.spu.getSpuInfoById(spu.spuId);
+        if(spuInfoResult.code==200){
+          this.spuInfo = spuInfoResult.data;
         }
+
+        // 根据spuid获取图片列表
+        let imageResult = await this.$API.spu.getImageBySpuId(spu.spuId);
+        if(imageResult.code==200){
+          this.imageList = imageResult.data.map(item=>{
+            return {
+              name:item.imgName,
+              url:item.imgUrl
+            }
+          });
+        }
+
+        // 获取trademark列表
+        let trademarkResult = await this.$API.spu.getTrademark();
+        if(trademarkResult.code == 200){
+          this.trademarkList = trademarkResult.data;
+        }
+
+        // 获取所有销售属性
+        let saleAttrResult = await this.$API.spu.getSaleAttr();
+        if(saleAttrResult.code == 200){
+          this.saleAttrList = saleAttrResult.data;
+        }
+      },
+
+      // 点击添加销售属性
+      addSaleAttr(){
+        let [id,name] = this.unUseSaleAttr.split(":");
+        // 构造数据
+        let item = {
+          id,
+          name,
+          spuSaleAttrValueList:[]
+        };
+        this.spuInfo.spuSaleAttrList.push(item);
+
+        this.unUseSaleAttr = "";
+      }
+    },
+    computed:{
+      unUseSaleAttrList(){
+        return this.saleAttrList.filter(item=>{
+          return this.spuInfo.spuSaleAttrList.every(i=>{
+            return i.id != item.id;
+          });
+        })
       }
     }
 }
 </script>
-
-<style scoped>
- .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409EFF;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
-  .avatar {
-    width: 178px;
-    height: 178px;
-    display: block;
-  }
-</style>
