@@ -57,6 +57,20 @@
             </el-table-column>
             <el-table-column
               label="属性值名称列表">
+              <template slot-scope="{row}">
+                <el-tag size="medium" closable v-for="(item,index) in row.saleAttrValueList" :key="index" style="margin-right:3px">{{item.saleAttrValueName}}</el-tag>
+                <el-input
+                  class="input-new-tag"
+                  v-if="row.inputVisible"
+                  v-model="row.inputValue"
+                  
+                  ref="saveTagInput"
+                  size="small"
+                  @keyup.enter.native="handleInputConfirm(row)"
+                  @blur="handleInputConfirm(row)">
+                </el-input>
+                <el-button v-else class="button-new-tag" size="small" @click="showInput(row)">添加</el-button>
+              </template>
             </el-table-column>
             <el-table-column
               label="操作"
@@ -168,6 +182,29 @@ export default {
         this.spuInfo.spuSaleAttrList.push(item);
 
         this.unUseSaleAttr = "";
+      },
+
+      // 当用户输入销售属性值完成后失去焦点或者回车的回调
+      handleInputConfirm(row){
+        row.inputVisible = false;
+        let saleAttrValueName = row.inputValue;
+        let baseSaleAttrId = row.id;
+        let obj = {
+          saleAttrValueName,
+          baseSaleAttrId
+        }
+
+        // 剩下的逻辑
+        console.log(obj);
+      },
+      showInput(row){
+        // row.inputVisible = true;
+        this.$set(row,"inputVisible",true);
+
+        // 点击自动获取焦点
+        this.$nextTick(()=>{
+          this.$refs.saveTagInput.focus();
+        })
       }
     },
     computed:{
