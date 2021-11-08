@@ -58,12 +58,12 @@
             <el-table-column
               label="属性值名称列表">
               <template slot-scope="{row}">
-                <el-tag size="medium" closable v-for="(item,index) in row.saleAttrValueList" :key="index" style="margin-right:3px">{{item.saleAttrValueName}}</el-tag>
+                <el-tag size="medium" closable v-for="(item,index) in row.saleAttrValueList" :key="index" style="margin:3px 3px">{{item.saleAttrValueName}}</el-tag>
                 <el-input
                   class="input-new-tag"
                   v-if="row.inputVisible"
                   v-model="row.inputValue"
-                  
+                  width="100"
                   ref="saveTagInput"
                   size="small"
                   @keyup.enter.native="handleInputConfirm(row)"
@@ -186,16 +186,28 @@ export default {
 
       // 当用户输入销售属性值完成后失去焦点或者回车的回调
       handleInputConfirm(row){
-        row.inputVisible = false;
-        let saleAttrValueName = row.inputValue;
+        let saleAttrValueName = row.inputValue.trim();
         let baseSaleAttrId = row.id;
-        let obj = {
-          saleAttrValueName,
-          baseSaleAttrId
-        }
 
-        // 剩下的逻辑
-        console.log(obj);
+        if(saleAttrValueName==""){
+          this.$message.warning("请输入属性值！");
+          row.inputValue = "";
+          return;
+        }
+        let isRepeat = row.saleAttrValueList.some(item=>item.saleAttrValueName == saleAttrValueName);
+
+        if(isRepeat){
+          this.$message.warning("属性值重复，请重新输入！");
+          row.inputValue = "";
+          return;
+        }
+        let obj = {
+          baseSaleAttrId,
+          saleAttrValueName
+        }
+        row.saleAttrValueList.push(obj);
+        row.inputVisible = false;
+        row.inputValue = "";
       },
       showInput(row){
         // row.inputVisible = true;
@@ -218,3 +230,8 @@ export default {
     }
 }
 </script>
+<style scoped>
+.input-new-tag{
+  width: 100px;
+}
+</style>
