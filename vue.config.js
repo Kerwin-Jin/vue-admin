@@ -6,7 +6,7 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-const name = defaultSettings.title || 'vue Admin Template' // page title
+const name = defaultSettings.title || 'ZeK后台管理' // page title
 
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
@@ -24,7 +24,9 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
-  publicPath: '/',
+   publicPath: process.env.NODE_ENV === 'production'
+    ? '/vue-admin/dist/'
+    : './',
   outputDir: 'dist',
   assetsDir: 'static',
   lintOnSave: false,
@@ -44,7 +46,7 @@ module.exports = {
     config.plugin('preload').tap(() => [
       {
         rel: 'preload',
-        // to ignore runtime.js
+        // to ignore runtime.JS
         // https://github.com/vuejs/vue-cli/blob/dev/packages/@vue/cli-service/lib/config/app.js#L171
         fileBlacklist: [/\.map$/, /hot-update\.js$/, /runtime\..*\.js$/],
         include: 'initial'

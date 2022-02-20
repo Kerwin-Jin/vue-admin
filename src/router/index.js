@@ -86,28 +86,38 @@ export const constantRoutes = [
         component:()=>import('@/views/product/sku/List'),
         meta:{title:'SKU管理'}
       },
-      
     ]
   },
-
   {
-    path:'/directory',
-    name:'Directory',
+    path:'/cinema',
+    name:'Cinema',
     component:Layout,
-    redirect:'/directory/wmzwzm',
-    meta:{title:'目录',icon:'link'},
+    redirect:'/cinema/dingying',
+    meta:{title:'电影院',icon:'el-icon-video-play'},
     children:[
       {
-        path:'wmzwzm',
-        name:'Wmzwzm',
-        component:()=>import('@/views/directory/wmzwzm/index'),
-        meta:{title:'无码中文字幕'}
+        path:'dianying',
+        name:'Dianying',
+        component:()=>import('@/views/cinema/dianying/index'),
+        meta:{title:'电影'}
       },
       {
-        path:'ymzwzm',
-        name:'Ymzwzm',
-        component:()=>import('@/views/directory/ymzwzm/index'),
-        meta:{title:'有码中文字幕'}
+        path:'dianshiju',
+        name:'Dianshiju',
+        component:()=>import('@/views/cinema/dianshiju/index'),
+        meta:{title:'电视剧'}
+      },
+      {
+        path:'zongyi',
+        name:'Zongyi',
+        component:()=>import('@/views/cinema/zongyi/index'),
+        meta:{title:'综艺'}
+      },
+      {
+        path:'dongman',
+        name:'Dongman',
+        component:()=>import('@/views/cinema/dongman/index'),
+        meta:{title:'动漫'}
       },
     ]
   },

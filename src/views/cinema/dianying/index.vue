@@ -1,12 +1,12 @@
 <template>
   <div>
-      无码中文字幕
+      电影
   </div>
 </template>
 
 <script>
 export default {
-
+    name:"Dianying"
 }
 </script>
 

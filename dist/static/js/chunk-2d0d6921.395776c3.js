@@ -1,0 +1,1 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0d6921"],{"72b2":function(n,e,t){"use strict";t.r(e);var u=function(){var n=this,e=n.$createElement,t=n._self._c||e;return t("div",[n._v(" 电影 ")])},a=[],c={name:"Dianying"},i=c,l=t("2877"),r=Object(l["a"])(i,u,a,!1,null,null,null);e["default"]=r.exports}}]);

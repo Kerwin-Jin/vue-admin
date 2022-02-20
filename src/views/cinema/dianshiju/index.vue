@@ -1,12 +1,12 @@
 <template>
   <div>
-      有中文字幕
+      电视剧
   </div>
 </template>
 
 <script>
 export default {
-
+  name:"Dianshiju"
 }
 </script>
 
